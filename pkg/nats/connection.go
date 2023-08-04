@@ -30,6 +30,7 @@ func (j jsConnection) QueueSubscribe(s string, q string, handler nats.MsgHandler
 	if durable := j.cfg.CalculateDurableName(s); durable != "" {
 		_, err := j.js.AddConsumer(s, &nats.ConsumerConfig{
 			Durable:        durable,
+			DeliverGroup:   j.cfg.DurablePrefix,
 			DeliverSubject: durable,
 		})
 
