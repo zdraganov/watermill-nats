@@ -31,12 +31,14 @@ func (j jsConnection) QueueSubscribe(s string, q string, handler nats.MsgHandler
 
 	fmt.Println("-===== CONFIG ======-")
 	fmt.Println(j.cfg.DurablePrefix)
+	fmt.Println(nats.DeliverNewPolicy)
 	fmt.Println("-===== CONFIG ======-")
 
 	if durable := j.cfg.CalculateDurableName(s); durable != "" {
 		_, err := j.js.AddConsumer(s, &nats.ConsumerConfig{
 			Durable:        durable,
 			DeliverGroup:   j.cfg.DurablePrefix,
+			DeliverPolicy:  nats.DeliverNewPolicy,
 			DeliverSubject: durable,
 		})
 
