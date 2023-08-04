@@ -28,7 +28,16 @@ func (j jsConnection) QueueSubscribe(s string, q string, handler nats.MsgHandler
 	opts := j.cfg.SubscribeOptions
 
 	if durable := j.cfg.CalculateDurableName(s); durable != "" {
-		opts = append(opts, nats.Durable(durable))
+		_, err := j.js.AddConsumer(s, &nats.ConsumerConfig{
+			Durable:        durable,
+			DeliverSubject: durable,
+		})
+
+		if err != nil {
+			return nil, err
+		}
+
+		opts = append(opts, nats.Durable(durable), nats.Bind(s, durable))
 	} else {
 		// find & bind stream based on subscription subject
 		opts = append(opts, nats.BindStream(""))
