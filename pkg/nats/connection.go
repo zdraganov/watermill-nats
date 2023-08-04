@@ -1,6 +1,8 @@
 package nats
 
 import (
+	"fmt"
+
 	"github.com/nats-io/nats.go"
 )
 
@@ -26,6 +28,10 @@ type jsConnection struct {
 // Subscribe subscribes to a JetStream subject
 func (j jsConnection) QueueSubscribe(s string, q string, handler nats.MsgHandler) (*nats.Subscription, error) {
 	opts := j.cfg.SubscribeOptions
+
+	fmt.Println("-===== CONFIG ======-")
+	fmt.Println(j.cfg.DurablePrefix)
+	fmt.Println("-===== CONFIG ======-")
 
 	if durable := j.cfg.CalculateDurableName(s); durable != "" {
 		_, err := j.js.AddConsumer(s, &nats.ConsumerConfig{
